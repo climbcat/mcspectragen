@@ -123,7 +123,21 @@ def gen_04():
     print_abspaths_json(dirname, filenames)
 
 def gen_05():
-    pass
+    ''' designed for separate background fitting '''
+    dirname = "test05"
+    filenames = [["d11.dat", "d12.dat", "d13.dat"], ["d21.dat", "d22.dat", "d23.dat"], ["d31.dat", "d32.dat", "d33.dat"]]
+    fct = dblgauss #  A1, mu1, sigma1, A2, mu2, sigma2
+    args_lst = [
+                [Args((0.4, -1, 6, 1, 5, 0.3, )), Args((0.4, -2, 6, 1, 2, 0.5, )), Args((0.4, -3, 6, 1, -3, 0.7, ))],
+                [Args((0.5, -6, 8, 1.5, 4, 0.3, )), Args((0.5, -6, 7, 1.5, 1, 0.5, )), Args((0.5, -6, 8, 1.5, -2, 0.7, ))],
+                [Args((0.6, -2, 7, 1, 1.5, 1, )), Args((0.6, -2, 7, 1, -0.5, 1, )), Args((0.6, -2, 7, 1, -2.1, 1, ))]
+                ]
+
+    vgen = np.vectorize(gen_write_data)
+    vgen(dirname, filenames, fct, args_lst)
+    
+    print_abspaths_json(dirname, filenames)
+
 
 '''
 main
@@ -133,11 +147,11 @@ def main(args):
     
     print("do teh gen")
 
-    gen_01()
-    gen_02()
-    gen_03()
-    gen_04()
-    #gen_05()
+    #gen_01()
+    #gen_02()
+    #gen_03()
+    #gen_04()
+    gen_05()
     
     print("done")
 
