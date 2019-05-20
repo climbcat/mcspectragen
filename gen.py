@@ -30,6 +30,9 @@ custom spectral function
 def dblgauss(x, A1, mu1, sigma1, A2, mu2, sigma2):
     return A1 * np.exp(-1*(x-mu1)*(x-mu1)/(2*sigma1*sigma1)) + A2 * np.exp(-1*(x-mu2)*(x-mu2)/(2*sigma2*sigma2))
 
+def peakonslope(x, alpha, beta, A, mu, sigma):
+    return alpha * x + beta + A * np.exp(-1*(x-mu)*(x-mu)/(2*sigma*sigma))
+
 '''
 data generation
 '''
@@ -112,7 +115,7 @@ def gen_03():
     print_abspaths_json(dirname, filenames)
 
 def gen_04():
-    ''' designed for separate background fitting '''
+    ''' ṕeak on gaussian background (single) '''
     dirname = "test04"
     filenames = ["d11.dat"]
     fct = dblgauss
@@ -124,15 +127,26 @@ def gen_04():
 
 def gen_05():
     ''' designed for separate background fitting '''
-    dirname = "test05"
+    dirname = "/home/jaga/source/ifitlab/iflproj/testdata/vect01"
     filenames = [["d11.dat", "d12.dat", "d13.dat"], ["d21.dat", "d22.dat", "d23.dat"], ["d31.dat", "d32.dat", "d33.dat"]]
     fct = dblgauss #  A1, mu1, sigma1, A2, mu2, sigma2
     args_lst = [
-                [Args((0.4, -1, 6, 1, 5, 0.3, )), Args((0.4, -2, 6, 1, 2, 0.5, )), Args((0.4, -3, 6, 1, -3, 0.7, ))],
-                [Args((0.5, -6, 8, 1.5, 4, 0.3, )), Args((0.5, -6, 7, 1.5, 1, 0.5, )), Args((0.5, -6, 8, 1.5, -2, 0.7, ))],
+                [Args((0.4, -1, 6, 1, 5, 0.3, )), Args((0.4, -2, 6, 1, 2, 0.5, )), Args((0.4, -2, 6, 1, -3, 0.7, ))],
+                [Args((0.5, -6, 8, 1.5, 4, 0.3, )), Args((0.5, -6, 8, 1.5, 1, 0.5, )), Args((0.5, -6, 8, 1.5, -2, 0.7, ))],
                 [Args((0.6, -2, 7, 1, 1.5, 1, )), Args((0.6, -2, 7, 1, -0.5, 1, )), Args((0.6, -2, 7, 1, -2.1, 1, ))]
                 ]
 
+    vgen = np.vectorize(gen_write_data)
+    vgen(dirname, filenames, fct, args_lst)
+    
+    print_abspaths_json(dirname, filenames)
+
+def gen_06():
+    ''' peak on sloping backgound (single) '''
+    dirname = "test06"
+    filenames = ["peakonslop.dat"]
+    fct = peakonslope
+    args_lst = [Args((0.1, 5, 7, -5, 0.5, ))]
     vgen = np.vectorize(gen_write_data)
     vgen(dirname, filenames, fct, args_lst)
     
@@ -151,7 +165,8 @@ def main(args):
     #gen_02()
     #gen_03()
     #gen_04()
-    gen_05()
+    #gen_05()
+    gen_06()
     
     print("done")
 
